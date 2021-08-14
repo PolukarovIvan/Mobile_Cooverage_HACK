@@ -3,6 +3,20 @@ import os
 import time
 from links import get_link_by_coordinates
 
+import multiprocessing
+
+try:
+    CPUS = multiprocessing.cpu_count()
+except NotImplementedError:
+    CPUS = 2   # arbitrary default
+
+
+def square(n):
+    return n * n
+
+pool = multiprocessing.Pool(processes=cpus)
+print(pool.map(square, range(1000)))
+
 # api-endpoint
 example_URL = "https://core-renderer-tiles.maps.yandex.net/tiles?l=map&v=21.08.12-2-b210701140430&x=2599&y=1305&z=12&scale=1&lang=ru_RU"
 URL = "https://core-renderer-tiles.maps.yandex.net/tiles"
@@ -43,10 +57,10 @@ class Img_parser(object):
 
     def parce_img(self, z, x, y, operator, type_of_net='Map'):
 
-        dir = operator + '_Tiles'
+        dir = os.path.join(operator + '_Tiles', type_of_net)
         if not os.path.exists(dir):
             os.mkdir(dir)
-        img_path = os.path.join(operator + '_Tiles', f'{operator}_{str(type_of_net)}_{str(x)}_{str(y)}.jpg')
+        img_path = os.path.join(dir, f'{operator}_{str(type_of_net)}_{str(x)}_{str(y)}.jpg')
 
         print(img_path)
 
