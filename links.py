@@ -4,8 +4,17 @@ def get_link_by_coordinates(z, x, y, operator='Map',
     params = {}
 
     if operator == 'Map':
-        pass
-    if operator == 'Meg':
+        params = {'l': 'map',
+                  'v': '21.08.12-2-b210701140430',
+                  'x': str(x),
+                  'y': str(y),
+                  'z': str(z),
+                  'scale': 1,
+                  'lang': 'ru_RU'}
+
+        url = "https://core-renderer-tiles.maps.yandex.net/tiles"
+
+    elif operator == 'Meg':
         # https://coverage-map.megafon.ru/11/1236/650.png?layers=3g
         url = 'https://coverage-map.megafon.ru/'
         url += '/'.join(map(str, (z, x, y)))
@@ -60,6 +69,7 @@ def get_link_by_coordinates(z, x, y, operator='Map',
         raise ValueError
 
     return {'url': url, 'params': params}
+
 
 if __name__ == '__main__':
     z, x, y = 12, 2580, 1273
