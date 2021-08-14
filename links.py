@@ -2,8 +2,8 @@ def get_link_by_coordinates(z, x, y, operator='Map',
                             type_of_net='lte'):
     url = ''
     params = {}
-    headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}
-
+    headers = {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'}
 
     if operator == 'Map':
         params = {'l': 'map',
