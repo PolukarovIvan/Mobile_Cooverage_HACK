@@ -17,15 +17,13 @@ scale = 1
 
 class Img_parser(object):
 
-    def __init__(self, n_jobs = -1, delay = 50):
+    def __init__(self, n_jobs=-1, delay=50):
         self.url = None
         self.params = None
-        self.n_jobs = n_jobs ## for future
+        self.n_jobs = n_jobs  ## for future
         self.delay = delay / 1000
 
-
-
-    def make_params(self, x, y, z = 13, scale = 1):
+    def make_params(self, x, y, z=13, scale=1):
         params = {'l': 'map',
                   'v': '21.08.12-2-b210701140430',
                   'x': str(x),
@@ -37,7 +35,7 @@ class Img_parser(object):
 
     def load_img_by_url(self, url, params):
         try:
-            response = requests.get(url=url, params= params)
+            response = requests.get(url=url, params=params)
             if response.status_code == 404:
                 return None
             if response.status_code == 200:
@@ -46,7 +44,8 @@ class Img_parser(object):
             print('Fail to load image')
             return None
 
-    def load_region(self, dir_to_save, url, boundaries, zoom): # boundaries = (left_up_x, left_up_x, right_down_x, right_down_y)
+    def load_region(self, dir_to_save, url, boundaries, zoom):
+        # boundaries = (left_up_x, left_up_x, right_down_x, right_down_y)
         start_time = time.time()
 
         if not os.path.exists(dir_to_save):
