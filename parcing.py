@@ -9,11 +9,11 @@ URL = "https://core-renderer-tiles.maps.yandex.net/tiles"
 OPERATORS = ['Map'] + ['Meg', 'Mtc', 'Bel', 'Tel']
 CONNECTION_TYPES = ['Map'] + ['3g', 'lte']
 
-left_up_x = 2569
-left_up_y = 1272
+left_up_x = 2571
+left_up_y = 1271
 
-right_down_x = 2600
-right_down_y = 1307
+right_down_x = 2598
+right_down_y = 1304
 
 zoom = 12
 scale = 1
@@ -27,9 +27,9 @@ class Img_parser(object):
         self.n_jobs = n_jobs  ## for future
         self.delay = delay / 1000
 
-    def load_img(self, url, params):
+    def load_img(self, url, params, headers):
         try:
-            response = requests.get(url=url, params=params)
+            response = requests.get(url=url, params=params, headers=headers)
             if response.status_code == 404:
                 return None
             if response.status_code == 200:
@@ -39,17 +39,23 @@ class Img_parser(object):
             return None
 
     def parce_img(self, z, x, y, operator, type_of_net='Map'):
+
+        dir = operator + '_Tiles'
+        if not os.path.exists(dir):
+            os.mkdir(dir)
         img_path = os.path.join(operator + '_Tiles', f'{operator}_{str(type_of_net)}_{str(x)}_{str(y)}.jpg')
 
         print(img_path)
 
-        link_and_params = get_link_by_coordinates(z, x, y)
+
+        link_and_params = get_link_by_coordinates(z, x, y, operator, type_of_net)
         print(link_and_params)
 
         cur_img = self.load_img(**link_and_params)
 
         with open(img_path, 'wb') as handler:
             handler.write(cur_img)
+
 
     def load_region(self, dir_to_save, url, boundaries, zoom):
         # boundaries = (left_up_x, left_up_x, right_down_x, right_down_y)
@@ -78,4 +84,4 @@ class Img_parser(object):
 
 
 parser = Img_parser()
-parser.load_region('map_zoom_13', URL, (left_up_x, left_up_y, right_down_x, right_down_y), zoom=12)
+parser.load_region('test', URL, (left_up_x, left_up_y, left_up_x+1, left_up_y+1), zoom=12)
