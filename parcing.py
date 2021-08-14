@@ -58,10 +58,10 @@ class Img_parser(object):
         try:
             with open(img_path, 'wb') as handler:
                 handler.write(cur_img)
-        except FileNotFoundError as e:
+        except Exception as e:
             print(e.args)
             with open(img_path, 'wb') as handler:
-                handler.write(EMPTY_TILE)
+                handler.write(EMPTY_TILE.content)
 
     def load_region(self, dir_to_save, url, boundaries, zoom):
         # boundaries = (left_up_x, left_up_x, right_down_x, right_down_y)
