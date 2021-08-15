@@ -2,7 +2,7 @@ import requests
 import os
 import time
 from links import get_link_by_coordinates
-from pysyncobj import SyncObj
+# from pysyncobj import SyncObj
 
 import multiprocessing
 
@@ -38,10 +38,10 @@ zoom = 12
 scale = 1
 
 
-class Img_parser(SyncObj):
+class Img_parser(object):
 
     def __init__(self, n_jobs=-1, delay=50):
-        super(Img_parser, self).__init__()
+        # super(Img_parser, self).__init__()
         self.url = None
         self.params = None
         self.n_jobs = n_jobs  ## for future
