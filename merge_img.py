@@ -1,17 +1,17 @@
 import os
 from PIL import Image
 
-if not os.path.exists('./map'):
-    os.mkdir('./map')
-path_dir = {'Bel_Tiles/lte': './map/bel_lte.jpg',
-            'Bel_Tiles/3g':  './map/bel_3g.jpg',
-            'Map_Tiles/Map': './map/map.jpg',
-            'Meg_Tiles/3g':  './map/meg_3g.jpg',
-            'Meg_Tiles/lte': './map/meg_lte.jpg',
-            'Mtc_Tiles/3g':  './map/mtc_3g.jpg',
-            'Mtc_Tiles/lte': './map/mtc_lte.jpg',
-            'Tel_Tiles/3g':  './map/tel_3g.jpg',
-            'Tel_Tiles/lte': './map/tel_lte.jpg'}
+if not os.path.exists('./map_png'):
+    os.mkdir('./map_png')
+path_dir = {'Bel_Tiles/lte': './map_png/bel_lte.png',
+            'Bel_Tiles/3g':  './map_png/bel_3g.png',
+            'Map_Tiles/Map': './map_png/map.png',
+            'Meg_Tiles/3g':  './map_png/meg_3g.png',
+            'Meg_Tiles/lte': './map_png/meg_lte.png',
+            'Mtc_Tiles/3g':  './map_png/mtc_3g.png',
+            'Mtc_Tiles/lte': './map_png/mtc_lte.png',
+            'Tel_Tiles/3g':  './map_png/tel_3g.png',
+            'Tel_Tiles/lte': './map_png/tel_lte.png'}
 #manual parameter
 x_len = 27#61#28
 y_len = 33#70#34
@@ -26,7 +26,7 @@ for path in path_dir.keys():
     total_width = images[0].size[0] * x_len
     max_height = images[0].size[0] * y_len
 
-    new_im = Image.new('RGB', (total_width, max_height))
+    new_im = Image.new('RGBA', (total_width, max_height))
 
 
     x_offset = 0
