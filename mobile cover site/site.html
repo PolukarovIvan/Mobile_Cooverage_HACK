@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* {box-sizing: border-box;}
+#point_map, #point_tile{
+  position:absolute;
+   background: blue;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    display: none;
+    z-index: 100;
+}
+#tel-2{
+  position: absolute;
+  top:0;
+  left:0;
+  z-index: 2;
+}
+.parent{position: relative;
+  top: 0;
+  left: 0;}
+
+  .mtc3, .mtc4, .meg3, .meg4,.tel3, .tel4, .bel3, .bel4{
+    position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  }
+
+  #settings{
+  position: absolute;
+  top:0;
+  right:0;
+  }
+</style>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script>
+  var projections = [{
+        name: 'wgs84Mercator',
+        eccentricity: 0.0818191908426
+    }, {
+        name: 'sphericalMercator',
+        eccentricity: 0
+    }], 
+    params = {
+        z: 12,
+        projection: projections[0]
+   };
+function fromGeoToPixels (lat, long, projection, z) {
+    var x_p, y_p,
+        pixelCoords,
+        tilenumber = [],
+        rho,
+        pi = Math.PI,
+        beta,   
+        phi,
+        theta,
+        e = projection.eccentricity;
+ 
+    rho = Math.pow(2, z + 8) / 2;
+    beta = lat * pi / 180;
+    phi = (1 - e * Math.sin(beta)) / (1 + e * Math.sin(beta));
+    theta = Math.tan(pi / 4 + beta / 2) * Math.pow(phi, e / 2);
+    
+    x_p = rho * (1 + long / 180);
+    y_p = rho * (1 - Math.log(theta) / pi);
+    
+    return [x_p, y_p];
+}
+
+// Функция для расчета номера тайла на основе глобальных пиксельных координат.
+function fromPixelsToTileNumber (x, y) {
+    return [
+        Math.floor(x / 256),
+        Math.floor(y / 256)
+    ];
+}
+
+
+
+$(document).ready(function() {
+    $("#divmap").on("click", function(event) {
+        var x = event.pageX - this.offsetLeft;
+        var y = event.pageY - this.offsetTop;
+       // alert("X Coordinate: " + x + " Y Coordinate: " + y);
+    xt=2571+Math.floor(x/17);
+    yt=1271+Math.floor(y/17);
+    
+    str="Map_Map_"+xt+"_"+yt+".jpg";
+    document.getElementById("maptile").src=str;  
+    str2="_"+xt+"_"+yt
+     document.getElementById("mtc3tile").src="Mtc_Tiles/3g/Mtc_3g"+str2+".png"; 
+  document.getElementById("mtc4tile").src="Mtc_Tiles/lte/Mtc_lte"+str2+".png"; 
+  document.getElementById("meg3tile").src="Meg_Tiles/3g/Meg_3g"+str2+".png"; 
+  document.getElementById("meg4tile").src="Meg_Tiles/lte/Meg_lte"+str2+".png"; 
+  document.getElementById("tel3tile").src="Tel_Tiles/3g/Tel_3g"+str2+".png"; 
+  document.getElementById("tel4tile").src="Tel_Tiles/lte/Tel_lte"+str2+".png"; 
+  document.getElementById("bel3tile").src="Bel_Tiles/3g/Bel_3g"+str2+".png"; 
+  document.getElementById("bel4tile").src="Bel_Tiles/lte/Bel_lte"+str2+".png"; 
+$("#point_map").show().css({left:event.pageX,top:event.pageY});
+    });
+
+
+   $("#coordsButton").on("click", function() {
+var str=$("#coords").val();
+coords=str.split(" ")
+try{
+lat=parseFloat(coords[0]);
+lon=parseFloat(coords[1]);
+
+pixelCoords = fromGeoToPixels(
+    lat,
+    lon,
+    params.projection,
+    params.z
+);
+
+tileNumber = fromPixelsToTileNumber(pixelCoords[0], pixelCoords[1]);
+if(tileNumber[0]<=2599&&tileNumber[0]>=2571&&tileNumber[1]<=1305&&tileNumber[1]>=1271)
+   { document.getElementById("maptile").src="Map_Map_"+tileNumber[0]+"_"+tileNumber[1]+".jpg"; 
+  document.getElementById("mtc3tile").src="Mtc_Tiles/3g/Mtc_3g"+tileNumber[0]+"_"+tileNumber[1]+".png"; 
+  document.getElementById("mtc4tile").src="Mtc_Tiles/lte/Mtc_lte"+tileNumber[0]+"_"+tileNumber[1]+".png"; 
+  document.getElementById("meg3tile").src="Meg_Tiles/3g/Meg_3g"+tileNumber[0]+"_"+tileNumber[1]+".png"; 
+  document.getElementById("meg4tile").src="Meg_Tiles/lte/Meg_lte"+tileNumber[0]+"_"+tileNumber[1]+".png"; 
+  document.getElementById("tel3tile").src="Tel_Tiles/3g/Tel_3g"+tileNumber[0]+"_"+tileNumber[1]+".png"; 
+  document.getElementById("tel4tile").src="Tel_Tiles/lte/Tel_lte"+tileNumber[0]+"_"+tileNumber[1]+".png"; 
+  document.getElementById("bel3tile").src="Bel_Tiles/3g/Bel_3g"+tileNumber[0]+"_"+tileNumber[1]+".png"; 
+  document.getElementById("bel4tile").src="Bel_Tiles/lte/Bel_lte"+tileNumber[0]+"_"+tileNumber[1]+".png"; 
+
+ /*       var x = $("#divmap").offsetLeft+Math.floor((tileNumber[0]-2571)/17);
+        var y = $("#divmap").offsetTop+Math.floor((tileNumber[1]-1271)/17);
+       
+  $("#point_map").show().css({left:x,top:y});*/
+}
+  else alert("Координаты другого региона")
+}
+catch{}
+
+ });
+
+ $('#mtc-g3').click(function() {
+    $(".mtc3").toggle(this.checked);
+});
+
+ $('#mtc-g4').click(function() {
+    $(".mtc4").toggle(this.checked);
+});
+
+ $('#meg-g3').click(function() {
+    $(".meg3").toggle(this.checked);
+});
+
+ $('#meg-g4').click(function() {
+    $(".meg4").toggle(this.checked);
+});
+
+ $('#tel-g3').click(function() {
+    $(".tel3").toggle(this.checked);
+});
+
+ $('#tel-g4').click(function() {
+    $(".tel4").toggle(this.checked);
+});
+
+ $('#bel-g3').click(function() {
+    $(".bel3").toggle(this.checked);
+});
+
+ $('#bel-g4').click(function() {
+    $(".bel4").toggle(this.checked);
+});
+
+});
+</script>
+</head>
+<body>
+
+<h1>Карта покрытия сети. Чувашия</h1>
+<div id="settings">
+ <label>МТС</label>
+<input type="checkbox" id="mtc-g3" >
+<label style="background-color:rgba(255,140,140,0.43);"> g3</label>
+<input type="checkbox" id="mtc-g4" >
+<label style="background-color:rgba(255,140,140,0.43);"> g4</label><br>
+
+ <label>Megafon</label>
+<input type="checkbox" id="meg-g3" >
+<label style="background-color:rgba(0,175,89,0.31);"> g3</label>
+<input type="checkbox" id="meg-g4" >
+<label style="background-color:rgba(119,27,156,0.29);"> g4</label><br>
+
+
+ <label>Beeline</label>
+<input type="checkbox" id="bel-g3" >
+<label style="background-color:rgba(255,233,76,0.5);" > g3</label>
+<input type="checkbox" id="bel-g4" >
+<label style="background-color:rgba(247,122,46,0.5);"> g4</label><br>
+
+
+ <label>Tele2</label>
+<input type="checkbox" id="tel-g3" >
+<label style="background-color:rgba(250,0,152,0.2);"> g3</label>
+<input type="checkbox" id="tel-g4" >
+<label style="background-color:rgba(250,98,0,0.2);"> g4</label>
+
+</div>
+<p>Введите координаты через пробел: <input id="coords" type="text"><button id="coordsButton">Ok</button>
+<p>Щелкните курсором на нужном месте:</p>
+
+
+
+<div class="parent"  width="476" height="595" id="divmap">
+<img src="map.jpg"  id="map" width="476" height="595">
+<img id="mtc3map" width="476" height="595"class="mtc3" src="map/mtc_3g.png" >
+<img id="mtc4map" width="476" height="595" class="mtc4" src="map/mtc_lte.png" >
+<img id="meg3map" width="476" height="595" class="meg3" src="map/meg_3g.png" >
+<img id="meg4map" width="476" height="595" class="meg4" src="map/meg_lte.png" >
+<img id="tel3map" width="476" height="595" class="tel3" src="map/tel_3g.png" >
+<img id="tel4map" width="476" height="595" class="tel4" src="map/tel_lte.png" >
+<img id="bel3map" width="476" height="595" class="bel3" src="map/bel_3g.png" >
+<!-- <img id="bel4map" width="476" height="595" class="bel4" src="map/bel_lte.png" > -->
+</div>
+
+<div id="point_map"></div>
+<div id="point_tile"></div>
+
+<div class="parent"><img id="maptile" width="256" height="256">
+<img id="mtc3tile" width="256" height="256" class="mtc3" >
+<img id="mtc4tile" width="256" height="256" class="mtc4" >
+<img id="meg3tile" width="256" height="256" class="meg3" >
+<img id="meg4tile" width="256" height="256" class="meg4" >
+<img id="tel3tile" width="256" height="256" class="tel3" >
+<img id="tel4tile" width="256" height="256" class="tel4" >
+<img id="bel3tile" width="256" height="256" class="bel3" >
+<img id="bel4tile" width="256" height="256" class="bel4" >
+</div>
+
+
+
+
+</body>
+</html>
